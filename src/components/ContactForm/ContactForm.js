@@ -1,13 +1,17 @@
 import { useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import contactsActions from 'redux/contacts-actions';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
+import { getItems } from '../../redux/contacts-selectors/ContactForm-selectors';
 import { Form, Label, Input } from './ContactForm.styled';
 import { Button } from 'components/Button/Button.styled';
-// import { number } from 'prop-types';
 
-function SubmitForm({ onSubmit }) {
+export default function SubmitForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const items = useSelector(getItems);
+  const dispatch = useDispatch();
 
   const handleInputChange = event => {
     const { name, value } = event.target;
@@ -27,9 +31,14 @@ function SubmitForm({ onSubmit }) {
 
   const handleSubmit = event => {
     event.preventDefault();
-
-    onSubmit(name, number);
-    reset();
+    if (items.some(item => item.name === name)) {
+      toast.error(`${name} is already in contacts`);
+      reset();
+      return;
+    } else {
+      dispatch(contactsActions.addContact(name, number));
+      reset();
+    }
   };
 
   const reset = () => {
@@ -67,10 +76,3 @@ function SubmitForm({ onSubmit }) {
     </Form>
   );
 }
-
-const mapDispatchToProps = dispatch => ({
-  onSubmit: (name, number) =>
-    dispatch(contactsActions.addContact(name, number)),
-});
-
-export default connect(null, mapDispatchToProps)(SubmitForm);
