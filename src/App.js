@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { MainTitle } from './App.styled';
 import Section from 'components/Section/Section';
 import ContactForm from 'components/ContactForm/ContactForm';
@@ -11,39 +10,23 @@ export default function CreateApp() {
   //   JSON.parse(window.localStorage.getItem('contacts') ?? []),
   // );
   const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
+  // const [filter, setFilter] = useState('');
 
-  const formSubmitHandler = data => {
-    const { name, number } = data;
-    const newContact = {
-      id: uuidv4(),
-      name: name,
-      number: number,
-    };
+  // const formSubmitHandler = data => {
+  //   const { name, number } = data;
+  //   const newContact = {
+  //     id: uuidv4(),
+  //     name: name,
+  //     number: number,
+  //   };
 
-    if (contacts.some(contact => contact.name === newContact.name)) {
-      alert(`${newContact.name} is already in contacts`);
-      return;
-    } else {
-      setContacts(prevState => [...prevState, newContact]);
-    }
-  };
-
-  const filterChangeHandler = event => {
-    setFilter(event.currentTarget.value);
-  };
-
-  const getfilteredContacts = () => {
-    const normilizedFilter = filter.toLowerCase();
-
-    return contacts.filter(record =>
-      record.name.toLowerCase().includes(normilizedFilter),
-    );
-  };
-
-  const deleteContact = contactId => {
-    setContacts(contacts.filter(contact => contact.id !== contactId));
-  };
+  //   if (contacts.some(contact => contact.name === newContact.name)) {
+  //     alert(`${newContact.name} is already in contacts`);
+  //     return;
+  //   } else {
+  //     setContacts(prevState => [...prevState, newContact]);
+  //   }
+  // };
 
   useEffect(() => {
     const savedContacts = JSON.parse(window.localStorage.getItem('contacts'));
@@ -54,20 +37,13 @@ export default function CreateApp() {
     window.localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
-  const filteredContacts = getfilteredContacts();
-
   return (
     <>
       <MainTitle>Phonebook</MainTitle>
-
-      <ContactForm onSubmit={formSubmitHandler} />
-
+      <ContactForm />
       <Section title="Contacts">
-        <Filter value={filter} onChange={filterChangeHandler} />
-        <ContactList
-          contacts={filteredContacts}
-          onDeleteContact={deleteContact}
-        />
+        <Filter />
+        <ContactList />
       </Section>
     </>
   );
